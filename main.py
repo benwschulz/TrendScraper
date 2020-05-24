@@ -1,14 +1,15 @@
+from HelperClasses.Authentication import Authentication
+from HelperClasses.TweetResults import TweetResults
 import tweepy
 
+api = Authentication().api
 
+tweets = tweepy.Cursor(api.search, q="covid19", lang="en", count=10).items(100)
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-api = tweepy.API(auth)
+resultData = TweetResults(tweets)
 
-tweets = tweepy.Cursor(api.search, q="covid19", lang="en", count=10).items(10)
-
-for tweet in tweets:
-    print(tweet.text)
+for tag in resultData.hashtags:
+    print(tag)
 
 
 
