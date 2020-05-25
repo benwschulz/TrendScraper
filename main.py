@@ -3,8 +3,9 @@ from HelperClasses.TweetResults import TweetResults
 import tweepy
 
 api = Authentication().api
+mainTag = "covid19"
 
-tweets = tweepy.Cursor(api.search, q="covid19", lang="en", count=10).items(100)
+tweets = tweepy.Cursor(api.search, q=mainTag, lang="en", count=10).items(100)
 
 resultData = TweetResults(tweets)
 
