@@ -1,26 +1,25 @@
-from HelperClasses import TweetData
+from HelperClasses.TweetData import TweetData
+
 
 class TweetResults:
     """Displays, modifies, parses, and analyzes a given result set"""
 
-    def __init__(self, tweets):
+    def __init__(self, searchResults):
         self.tweets = []
-        self.getTweetData(tweets)
-        self.textBodies = (o.text for o in tweets)  # The text of each tweet
-        self.users = (u.user for u in tweets)  # The user data for each tweet
-        self.hashtags = self.gethashtags(tweets)  # All unique hashtags in these tweets
-        self.locations = (c.coordinates for c in tweets)  # All lat/long coordinates in these tweets
+        self.hashtags = []
+        self.gettweetdata(searchResults)
+        self.gethashtags(searchResults)  # All unique hashtags in these tweets
 
-    @staticmethod
-    # Get all unique hashtags that occur in a specified result set
-    def gethashtags(tweets):
-        results = []
-        entities = (h.entities.get('hashtags') for h in tweets)
-        for entity in entities:
-            for item in entity:
-                results.append(item.get('text').lower())
-        return set(results)
-
-    def getTweetData(self, tweets):
-        for tweet in tweets:
+    """Converts the list of incoming tweets to a list of type TweetData"""
+    def gettweetdata(self, searchResults):
+        for tweet in searchResults:
             self.tweets.append(TweetData(tweet))
+
+    """Gets all unique hashtags in a list of tweets and converts them to lowercase"""
+    def gethashtags(self, searchResults):
+        for tweet in self.tweets:
+            entities = tweet.baseData.entities.get('hashtags')
+            for entity in entities:
+                text = entity.get('text').lower()
+                if text not in self.hashtags:
+                    self.hashtags.append(text)
