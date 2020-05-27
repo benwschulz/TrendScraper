@@ -10,4 +10,6 @@ class TweetData:
 
     """Gets all comments for this tweet"""
     def getcomments(self):
+        entities = self.baseData.entities.get('hashtags')
+
         self.comments.append("test")

@@ -11,8 +11,12 @@ tweets = tweepy.Cursor(api.search, q=mainTag, lang="en").items(resultCount)
 
 resultData = TweetResults(tweets)
 
-for tag in resultData.hashtags:
-    print(tag)
+#for tag in resultData.hashtags:
+ #   print(tag)
+
+for tweet in resultData.tweets:
+    if (tweet.user.baseData.location != ""):
+        print(tweet.user.baseData.location)
 
 
 
