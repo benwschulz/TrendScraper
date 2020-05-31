@@ -16,9 +16,9 @@ class User:
             geolocator = Nominatim(user_agent="TrendScraper")
             try:
                 location = geolocator.geocode(self.baseData.location)
-                return (location.latitude, location.longitude)
+                return str((location.latitude, location.longitude))
             except:
-                return ""
+                pass
 
     """Determines whether this user is a bot or not (many users are, and we don't want to count them)"""
     def getBotStatus(self):
