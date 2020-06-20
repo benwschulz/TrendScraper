@@ -7,7 +7,7 @@ import cartopy.crs as ccrs
 api = Authentication().api
 
 mainTag = "covid19"
-resultCount = 1
+resultCount = 20
 tweets = tweepy.Cursor(api.search, q=mainTag, tweet_mode='extended', lang="en").items(resultCount)
 
 fig = plt.figure(figsize=(12, 8))
