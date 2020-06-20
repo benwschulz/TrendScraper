@@ -1,36 +1,34 @@
+import tweepy
 from HelperClasses.Authentication import Authentication
 from HelperClasses.TweetResults import TweetResults
-import tweepy
-
-#import cartopy.crs as ccrs                   # import projections
-#import cartopy.feature as cf                 # import features
-#ax = plt.axes(projection = ccrs.Mercator())  # create a set of axes with Mercator projection
-#ax.add_feature(cf.COASTLINE)                 # plot some data on them
-#ax.set_title("Title")                        # label it
-#plt.show()
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
 
 api = Authentication().api
 
-mainTag = "georgefloyd"
-resultCount = 100
-
+mainTag = "covid19"
+resultCount = 1
 tweets = tweepy.Cursor(api.search, q=mainTag, tweet_mode='extended', lang="en").items(resultCount)
 
+fig = plt.figure(figsize=(12, 8))
+ax = plt.axes(projection=ccrs.PlateCarree())
+ax.set_global()
+ax.stock_img()
+ax.coastlines()
+plt.title('#' + mainTag)
+
 resultData = TweetResults(tweets)
-#also add functionality for Twitter API Place object
 
 for tweet in resultData.tweets:
     if tweet.user.baseData.location != "":
-        print(tweet.user.baseData.location)
+        if tweet.user.coordinates is not None:
+            lat = tweet.user.coordinates[0]
+            long = tweet.user.coordinates[1]
+            plt.plot(long, lat, markersize=4, marker='o', color='red')
+            print(tweet.user.baseData.location, ":", tweet.text)
+            print("")
 
-
-
-
-
-
-
-
-
+plt.show()
 
 
 
