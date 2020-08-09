@@ -22,7 +22,7 @@ def drawMap(results, date):
                 long = tweet.user.coordinates[1]
                 plt.plot(long, lat, markersize=4, marker='o', color='red')
 
-    plt.show()
+    plt.savefig("{0}.png".format(date))
 
 
 api = Authentication().api
