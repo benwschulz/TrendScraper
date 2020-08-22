@@ -26,42 +26,47 @@ def drawMap(results, date):
 
     plt.savefig("Output/Maps/{0}.png".format(date))
 
+"""Prints out the text of each tweet in the set in a readable format"""
 def printText(results, date):
     output = open("Output/Content/{0}.txt".format(date), 'w')
 
     for tweet in resultData.tweets:
-        output.write("{0} ({1})\n".format(str(tweet.baseData.created_at),
-                                          tweet.baseData.user.location))
+        location = tweet.baseData.user.location
+        printLocation = "No Location" if not location else location
+
+        output.write("----------------------------{0}----------------------------\n".format(printLocation))
         output.write(tweet.baseData.full_text + '\n')
-        output.write("--------------------------")
 
     output.close()
 
+# Connect to Twitter API
 api = Authentication().api
 
 mainTag = "covid19"
 resultCount = 20
 
-# Gets the results for each day in the last ten days (as far back as the public Twitter API allows)
-for i in reversed(range(10)):
-    # Go back one more day on each iteration
-    untilDate = datetime.today() - timedelta(days=i)
-    sinceDate = datetime.today() - timedelta(days=i + 1)
+# Gets the results for each day in the last seven days (as far back as the public Twitter API allows)
+for i in reversed(range(7)):
+    # On the last iteration of this loop, get today
+    if i == 0:
+        until = (datetime.today() + timedelta(days=1))
+        since = (datetime.today())
+    else:
+        # Go back one more day on each iteration
+        until = datetime.today() - timedelta(days=i)
+        since = datetime.today() - timedelta(days=i + 1)
 
     # Format datetime objects as strings
-    Since = sinceDate.strftime('%Y-%m-%d %H:%M')
-    Until = untilDate.strftime('%Y-%m-%d %H:%M')
+    EndDate = until.strftime('%Y-%m-%d %H:%M')
+    StartDate = since.strftime('%Y-%m-%d %H:%M')
 
-    # Gets today
-    if i == 0:
-        Until = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M')
-        Since = (datetime.today()).strftime('%Y-%m-%d %H:%M')
-
-    tweets = tweepy.Cursor(api.search, q=mainTag, since=Since, until=Until,
+    tweets = tweepy.Cursor(api.search, q=mainTag, since=StartDate, until=EndDate,
                            tweet_mode='extended', lang="en").items(resultCount)
+
     resultData = TweetResults(tweets)
 
-    fileName = sinceDate.strftime('%Y-%m-%d')
+    # Create output
+    fileName = StartDate
     printText(resultData.tweets, fileName)
     drawMap(resultData.tweets, fileName)
 
